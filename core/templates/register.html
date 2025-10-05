@@ -1,0 +1,604 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRCTC Registration</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #0c4a8a;
+        --primary-orange: #ff6b35;
+        --success-green: #28a745;
+        --error-red: #dc3545;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: var(--text-dark);
+        line-height: 1.6;
+      }
+
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .brand-text p {
+        color: var(--text-light);
+        font-size: 0.85rem;
+      }
+
+      .accessibility-controls {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .accessibility-controls button {
+        padding: 0.6rem 1rem;
+        border: 2px solid var(--primary-blue);
+        background: var(--white);
+        color: var(--primary-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .accessibility-controls button:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .register-container {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        width: 100%;
+        max-width: 450px;
+        padding: 3rem;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .register-header h2 {
+        color: var(--primary-blue);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .register-header p {
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1.2rem;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 3rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--white);
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(12, 74, 138, 0.1);
+      }
+
+      .form-group input::placeholder {
+        color: #adb5bd;
+      }
+
+      .form-group input:valid {
+        border-color: var(--success-green);
+      }
+
+      .form-group input.error {
+        border-color: var(--error-red);
+        animation: shake 0.3s ease;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      .error-message {
+        color: var(--error-red);
+        font-size: 0.85rem;
+        margin-top: 0.3rem;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue) 0%,
+          #0a3d6e 100%
+        );
+        color: var(--white);
+        margin-bottom: 1rem;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      .btn-primary.loading {
+        position: relative;
+        color: transparent;
+      }
+
+      .btn-primary.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 3px solid var(--white);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid #f0f0f0;
+      }
+
+      .login-link p {
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+      }
+
+      .login-link a {
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .login-link a:hover {
+        color: var(--primary-orange);
+        text-decoration: underline;
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem 2rem;
+        text-align: center;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        margin-top: auto;
+      }
+
+      .footer-content p {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .brand-text p {
+          display: none;
+        }
+
+        .register-container {
+          padding: 2rem;
+        }
+
+        header {
+          padding: 1rem;
+        }
+
+        .accessibility-controls button {
+          padding: 0.5rem 0.8rem;
+          font-size: 0.9rem;
+        }
+      }
+
+      body.high-contrast {
+        background: #000;
+      }
+
+      body.high-contrast header,
+      body.high-contrast .register-container,
+      body.high-contrast footer {
+        background: #fff;
+        border: 3px solid #000;
+      }
+
+      body.high-contrast .form-group input {
+        border: 3px solid #000;
+      }
+
+      body.large-text {
+        font-size: 120%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">🚂</div>
+          <div class="brand-text">
+            <h1>IRCTC</h1>
+            <p>Indian Railway Catering and Tourism Corporation</p>
+          </div>
+        </div>
+        <div class="accessibility-controls">
+          <button
+            onclick="toggleContrast()"
+            aria-label="Toggle high contrast mode"
+            title="High Contrast"
+          >
+            🔳
+          </button>
+          <button
+            onclick="toggleTextSize()"
+            aria-label="Toggle large text"
+            title="Increase Text Size"
+          >
+            A+
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="register-container">
+        <div class="register-header">
+          <h2>Create Account</h2>
+          <p>Join IRCTC to book train tickets easily</p>
+        </div>
+
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="aadhar">Aadhaar Number</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🆔</span>
+              <input
+                type="text"
+                id="aadhar"
+                name="aadhar"
+                maxlength="12"
+                placeholder="Enter your 12-digit Aadhaar"
+                pattern="[0-9]{12}"
+                required
+                aria-required="true"
+              />
+            </div>
+            <span class="error-message" id="aadharError"
+              >Please enter a valid 12-digit Aadhaar number</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📱</span>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                maxlength="10"
+                placeholder="Enter your 10-digit phone number"
+                pattern="[0-9]{10}"
+                required
+                aria-required="true"
+              />
+            </div>
+            <span class="error-message" id="phoneError"
+              >Please enter a valid 10-digit phone number</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+                aria-required="true"
+              />
+            </div>
+            <span class="error-message" id="nameError"
+              >Please enter your name</span
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+
+        <div class="login-link">
+          <p>Already have an account?</p>
+          <a href="/login/">Login Here</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p>
+          © 2025 IRCTC. All Rights Reserved. | Ministry of Railways, Government
+          of India
+        </p>
+      </div>
+    </footer>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+      let contrastMode = false;
+      let largeText = false;
+
+      function toggleContrast() {
+        contrastMode = !contrastMode;
+        document.body.classList.toggle("high-contrast");
+      }
+
+      function toggleTextSize() {
+        largeText = !largeText;
+        document.body.classList.toggle("large-text");
+      }
+
+      const aadharInput = document.getElementById("aadhar");
+      const phoneInput = document.getElementById("phone");
+      const nameInput = document.getElementById("name");
+      const aadharError = document.getElementById("aadharError");
+      const phoneError = document.getElementById("phoneError");
+      const nameError = document.getElementById("nameError");
+      const form = document.getElementById("registerForm");
+
+      aadharInput.addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        validateAadhar();
+      });
+
+      phoneInput.addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        validatePhone();
+      });
+
+      function validateAadhar() {
+        const value = aadharInput.value;
+        if (value.length > 0 && value.length !== 12) {
+          aadharInput.classList.add("error");
+          aadharError.classList.add("show");
+          return false;
+        } else {
+          aadharInput.classList.remove("error");
+          aadharError.classList.remove("show");
+          return true;
+        }
+      }
+
+      function validatePhone() {
+        const value = phoneInput.value;
+        if (value.length > 0 && value.length !== 10) {
+          phoneInput.classList.add("error");
+          phoneError.classList.add("show");
+          return false;
+        } else {
+          phoneInput.classList.remove("error");
+          phoneError.classList.remove("show");
+          return true;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const aadhar = aadharInput.value.trim();
+          const phone = phoneInput.value.trim();
+          const name = nameInput.value.trim();
+
+          if (!aadhar || aadhar.length !== 12) {
+            aadharInput.classList.add("error");
+            aadharError.classList.add("show");
+            aadharInput.focus();
+            return;
+          }
+
+          if (!phone || phone.length !== 10) {
+            phoneInput.classList.add("error");
+            phoneError.classList.add("show");
+            phoneInput.focus();
+            return;
+          }
+
+          if (!name) {
+            nameInput.classList.add("error");
+            nameError.classList.add("show");
+            nameInput.focus();
+            return;
+          }
+
+          const submitBtn = form.querySelector(".btn-primary");
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+
+          try {
+            const res = await fetch("/api/register/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ aadhar, phone, name }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              alert(data.detail || "Registration failed. Please try again.");
+              submitBtn.classList.remove("loading");
+              submitBtn.disabled = false;
+              return;
+            }
+
+            localStorage.setItem("token", data.access);
+            localStorage.setItem("username", data.user.first_name || name);
+            window.location.href = "/home/";
+
+            submitBtn.textContent = "✓ Success!";
+            submitBtn.style.background = "var(--success-green)";
+
+            setTimeout(() => {
+              window.location.href = "/home/";
+            }, 500);
+          } catch (error) {
+            alert("Network error. Please try again.");
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

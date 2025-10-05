@@ -1,0 +1,443 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PNR Status - IRCTC</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #0c4a8a;
+        --success-green: #28a745;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+      }
+
+      .back-btn {
+        padding: 0.6rem 1.2rem;
+        background: var(--white);
+        color: var(--primary-blue);
+        border: 2px solid var(--primary-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .pnr-container {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        width: 100%;
+        max-width: 500px;
+        padding: 3rem;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .pnr-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .status-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .pnr-header h2 {
+        color: var(--text-dark);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .pnr-header p {
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 600;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1.2rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 3rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        letter-spacing: 2px;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(12, 74, 138, 0.1);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      .btn-primary.loading {
+        position: relative;
+        color: transparent;
+      }
+
+      .btn-primary.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin: -10px 0 0 -10px;
+        border: 3px solid var(--white);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .result-box {
+        margin-top: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+        border-radius: 15px;
+        border: 2px solid var(--primary-blue);
+        display: none;
+      }
+
+      .result-box.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-box h3 {
+        color: var(--primary-blue);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #d0e8f2;
+      }
+
+      .result-item:last-child {
+        border-bottom: none;
+      }
+
+      .result-label {
+        color: var(--text-light);
+        font-weight: 600;
+      }
+
+      .result-value {
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        margin-top: auto;
+      }
+
+      footer p {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .pnr-container {
+          padding: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">🚂</div>
+          <div class="brand-text">
+            <h1>PNR Status</h1>
+          </div>
+        </div>
+        <button class="back-btn" onclick="window.location.href='/home/'">
+          ← Back to Home
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="pnr-container">
+        <div class="pnr-header">
+          <div class="status-icon">🔍</div>
+          <h2>Check PNR Status</h2>
+          <p>Enter your 10-digit PNR number</p>
+        </div>
+
+        <form id="pnrForm">
+          <div class="form-group">
+            <label for="pnr">PNR Number</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🎫</span>
+              <input
+                type="text"
+                id="pnr"
+                placeholder="Enter PNR"
+                maxlength="10"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Check Status</button>
+        </form>
+
+        <div class="result-box" id="resultBox">
+          <h3>Booking Details</h3>
+          <div id="resultContent"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        © 2025 IRCTC. All Rights Reserved. | Ministry of Railways, Government of
+        India
+      </p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("pnrForm");
+        const resultBox = document.getElementById("resultBox");
+        const resultContent = document.getElementById("resultContent");
+
+        // Only allow numbers in PNR input
+        document.getElementById("pnr").addEventListener("input", function (e) {
+          e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        });
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const pnr = document.getElementById("pnr").value.trim();
+          if (!pnr) {
+            alert("Please enter a PNR number");
+            return;
+          }
+
+          const submitBtn = form.querySelector(".btn-primary");
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+          resultBox.classList.remove("show");
+
+          try {
+            const res = await fetch(`/api/pnr/${pnr}/`);
+            const data = await res.json();
+
+            if (!res.ok) {
+              alert(data.detail || "PNR not found");
+              submitBtn.classList.remove("loading");
+              submitBtn.disabled = false;
+              return;
+            }
+
+            // Display results (includes PNR and Route)
+            resultContent.innerHTML = `
+                        <div class="result-item">
+                            <span class="result-label">PNR:</span>
+                            <span class="result-value">${data.pnr}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Route:</span>
+                            <span class="result-value">${data.route}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Travel Date:</span>
+                            <span class="result-value">${data.travel_date}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Class:</span>
+                            <span class="result-value">${data.class}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Status:</span>
+                            <span class="result-value">${data.status}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Amount:</span>
+                            <span class="result-value">₹${data.amount}</span>
+                        </div>
+                    `;
+
+            resultBox.classList.add("show");
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          } catch (error) {
+            alert("Network error. Please try again.");
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

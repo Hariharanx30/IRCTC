@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Train Ticket - IRCTC</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #0c4a8a;
+        --primary-orange: #ff6b35;
+        --success-green: #28a745;
+        --error-red: #dc3545;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+      }
+
+      .back-btn {
+        padding: 0.6rem 1.2rem;
+        background: var(--white);
+        color: var(--primary-blue);
+        border: 2px solid var(--primary-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .booking-container {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        width: 100%;
+        max-width: 700px;
+        padding: 3rem;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .booking-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .booking-header h2 {
+        color: var(--primary-blue);
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .booking-header p {
+        color: var(--text-light);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-weight: 600;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1.1rem;
+      }
+
+      .mic-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-blue);
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+      }
+
+      .mic-icon:hover {
+        color: var(--primary-orange);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.9rem 1rem 0.9rem 3rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(12, 74, 138, 0.1);
+      }
+
+      .suggestion-box {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        border: 2px solid var(--primary-blue);
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 10;
+        box-shadow: var(--shadow);
+      }
+
+      .suggestion-item {
+        padding: 0.8rem 1rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .suggestion-item:hover {
+        background: #f8f9fa;
+      }
+
+      .fare-display {
+        background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        margin: 1.5rem 0;
+        border: 2px dashed var(--primary-blue);
+      }
+
+      .fare-display.hidden {
+        display: none;
+      }
+
+      .fare-display h3 {
+        color: var(--text-dark);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .fare-amount {
+        color: var(--primary-blue);
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      .btn-primary.loading {
+        position: relative;
+        color: transparent;
+      }
+
+      .btn-primary.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin: -10px 0 0 -10px;
+        border: 3px solid var(--white);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 0.6s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .popup-content {
+        background: var(--white);
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: popIn 0.3s ease;
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .popup-content h3 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .popup-content p {
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .popup-content button {
+        padding: 0.8rem 2rem;
+        background: var(--primary-blue);
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .popup-content button:hover {
+        background: #0a3d6e;
+        transform: scale(1.05);
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        margin-top: auto;
+      }
+
+      footer p {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .booking-container {
+          padding: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">🚂</div>
+          <div class="brand-text">
+            <h1>Book Train Ticket</h1>
+          </div>
+        </div>
+        <button class="back-btn" onclick="window.location.href='/home/'">
+          <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="booking-container">
+        <div class="booking-header">
+          <h2>Book Your Journey</h2>
+          <p>Search and book train tickets across India</p>
+        </div>
+
+        <form id="bookingForm">
+          <div class="form-group">
+            <label for="fromStation">From Station</label>
+            <div class="input-wrapper">
+              <span class="input-icon"
+                ><i class="fa-solid fa-location-dot"></i
+              ></span>
+              <input
+                type="text"
+                id="fromStation"
+                autocomplete="off"
+                placeholder="Enter departure station"
+                required
+              />
+              <span class="mic-icon" onclick="startVoiceInput('from')"
+                ><i class="fa-solid fa-microphone"></i
+              ></span>
+              <div class="suggestion-box" id="fromSuggestions"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="toStation">To Station</label>
+            <div class="input-wrapper">
+              <span class="input-icon"
+                ><i class="fa-solid fa-location-dot"></i
+              ></span>
+              <input
+                type="text"
+                id="toStation"
+                autocomplete="off"
+                placeholder="Enter destination station"
+                required
+              />
+              <span class="mic-icon" onclick="startVoiceInput('to')"
+                ><i class="fa-solid fa-microphone"></i
+              ></span>
+              <div class="suggestion-box" id="toSuggestions"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="travelDate">Journey Date</label>
+            <div class="input-wrapper">
+              <span class="input-icon"
+                ><i class="fa-solid fa-calendar"></i
+              ></span>
+              <input type="date" id="travelDate" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="class">Travel Class</label>
+            <div class="input-wrapper">
+              <span class="input-icon"><i class="fa-solid fa-chair"></i></span>
+              <select id="class" required>
+                <option value="Sleeper">Sleeper Class (SL)</option>
+                <option value="AC 3-Tier">AC 3-Tier (3A)</option>
+                <option value="AC 2-Tier">AC 2-Tier (2A)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="quota">Booking Quota</label>
+            <div class="input-wrapper">
+              <span class="input-icon"><i class="fa-solid fa-ticket"></i></span>
+              <select id="quota" required>
+                <option value="General">General Quota</option>
+                <option value="Tatkal">Tatkal (Emergency)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="fare-display hidden" id="fareDisplay">
+            <h3>Estimated Fare</h3>
+            <div class="fare-amount" id="fareAmount">₹ 0</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Confirm Booking</button>
+        </form>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        © 2025 IRCTC. All Rights Reserved. | Ministry of Railways, Government of
+        India
+      </p>
+    </footer>
+
+    <div class="popup-overlay" id="popupOverlay">
+      <div class="popup-content">
+        <h3 id="popupTitle">Notice</h3>
+        <p id="popupMessage">Message</p>
+        <button onclick="closePopup()">OK</button>
+      </div>
+    </div>
+
+    <script>
+      const stations = [
+        "Chennai Central",
+        "Bangalore",
+        "Delhi",
+        "Mumbai",
+        "Hyderabad",
+        "Kolkata",
+        "Ahmedabad",
+        "Pune",
+        "Jaipur",
+        "Coimbatore",
+        "Kochi",
+        "Trivandrum",
+        "Madurai",
+        "Salem",
+        "Tiruchirapalli",
+        "Vellore",
+        "Mysore",
+        "Mangalore",
+        "Vijayawada",
+        "Visakhapatnam",
+      ];
+
+      const classToCode = {
+        Sleeper: "SL",
+        "AC 2-Tier": "2A",
+        "AC 3-Tier": "3A",
+      };
+      const baseFare = { SL: 450, "2A": 1850, "3A": 1200 };
+      const quotaSurcharge = { General: 0, Tatkal: 250 };
+
+      function estimateFare(cls, quota) {
+        const code = classToCode[cls] || "SL";
+        const base = baseFare[code] || 450;
+        const extra = quotaSurcharge[quota] || 0;
+        return base + extra;
+      }
+
+      function showPopup(title, message) {
+        document.getElementById("popupTitle").textContent = title;
+        document.getElementById("popupMessage").textContent = message;
+        document.getElementById("popupOverlay").style.display = "flex";
+      }
+
+      function closePopup() {
+        document.getElementById("popupOverlay").style.display = "none";
+      }
+
+      function setupAutocomplete(inputId, suggestionBoxId) {
+        const input = document.getElementById(inputId);
+        const suggestionBox = document.getElementById(suggestionBoxId);
+
+        input.addEventListener("input", (e) => {
+          const query = e.target.value.trim();
+          if (query.length < 2) {
+            suggestionBox.style.display = "none";
+            return;
+          }
+          const matches = stations.filter((s) =>
+            s.toLowerCase().includes(query.toLowerCase())
+          );
+          if (matches.length === 0) {
+            suggestionBox.style.display = "none";
+            return;
+          }
+          suggestionBox.innerHTML = "";
+          matches.forEach((station) => {
+            const div = document.createElement("div");
+            div.className = "suggestion-item";
+            div.textContent = station;
+            div.addEventListener("click", () => {
+              input.value = station;
+              suggestionBox.style.display = "none";
+              updateFare();
+            });
+            suggestionBox.appendChild(div);
+          });
+          suggestionBox.style.display = "block";
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.parentElement.contains(e.target)) {
+            suggestionBox.style.display = "none";
+          }
+        });
+      }
+
+      function updateFare() {
+        const from = document.getElementById("fromStation").value.trim();
+        const to = document.getElementById("toStation").value.trim();
+        const date = document.getElementById("travelDate").value;
+        const cls = document.getElementById("class").value;
+        const quota = document.getElementById("quota").value;
+        const fareDisplay = document.getElementById("fareDisplay");
+        const fareAmount = document.getElementById("fareAmount");
+
+        if (from && to && date && cls && quota) {
+          const fare = estimateFare(cls, quota);
+          fareAmount.textContent = "₹ " + fare;
+          fareDisplay.classList.remove("hidden");
+        } else {
+          fareDisplay.classList.add("hidden");
+        }
+      }
+
+      function startVoiceInput(field) {
+        const fieldName = field === "from" ? "From Station" : "To Station";
+        showPopup(
+          "Coming Soon",
+          `Voice input for ${fieldName} will be available soon!`
+        );
+      }
+
+      setupAutocomplete("fromStation", "fromSuggestions");
+      setupAutocomplete("toStation", "toSuggestions");
+
+      document.getElementById("class").addEventListener("change", updateFare);
+      document.getElementById("quota").addEventListener("change", updateFare);
+      document
+        .getElementById("travelDate")
+        .addEventListener("change", updateFare);
+      document
+        .getElementById("fromStation")
+        .addEventListener("blur", updateFare);
+      document.getElementById("toStation").addEventListener("blur", updateFare);
+
+      document
+        .getElementById("bookingForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const token = localStorage.getItem("token");
+          if (!token) {
+            window.location.href = "/login/";
+            return;
+          }
+
+          const from = document.getElementById("fromStation").value.trim();
+          const to = document.getElementById("toStation").value.trim();
+          const date = document.getElementById("travelDate").value;
+          const clsName = document.getElementById("class").value;
+          const quota = document.getElementById("quota").value;
+
+          if (!from || !to || !date) {
+            showPopup(
+              "Missing Information",
+              "Please fill in all required fields."
+            );
+            return;
+          }
+
+          if (from.toLowerCase() === to.toLowerCase()) {
+            showPopup(
+              "Invalid Route",
+              "Departure and destination stations cannot be the same."
+            );
+            return;
+          }
+
+          const cls = classToCode[clsName] || "SL";
+          const amount = estimateFare(clsName, quota);
+
+          const submitBtn = document.querySelector(".btn-primary");
+          submitBtn.classList.add("loading");
+          submitBtn.disabled = true;
+
+          try {
+            const res = await fetch("/api/book/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                route: `${from} → ${to}`,
+                travel_date: date,
+                cls: cls,
+                amount: amount,
+              }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              showPopup(
+                "Booking Failed",
+                data.detail || "Please try again later."
+              );
+              submitBtn.classList.remove("loading");
+              submitBtn.disabled = false;
+              return;
+            }
+
+            sessionStorage.setItem("last_pnr", data.pnr);
+
+            showPopup(
+              "Booking Successful!",
+              `Your ticket has been booked.\n\nPNR: ${data.pnr}\nRoute: ${data.route}\nDate: ${data.travel_date}\nClass: ${data.cls}\nAmount: ₹${data.amount}`
+            );
+
+            const overlay = document.getElementById("popupOverlay");
+            const onClose = () => {
+              overlay.removeEventListener("click", onClose);
+              window.location.href = "/history/";
+            };
+            overlay.addEventListener("click", (ev) => {
+              if (ev.target === overlay) onClose();
+            });
+            const okBtn = overlay.querySelector("button");
+            okBtn.onclick = onClose;
+          } catch (err) {
+            showPopup(
+              "Network Error",
+              "Could not connect to server. Please check your connection."
+            );
+            submitBtn.classList.remove("loading");
+            submitBtn.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>

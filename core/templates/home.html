@@ -1,0 +1,403 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRCTC Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #0c4a8a;
+        --primary-orange: #ff6b35;
+        --success-green: #28a745;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: var(--text-dark);
+      }
+
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .header-actions button {
+        padding: 0.6rem 1rem;
+        border: 2px solid var(--primary-blue);
+        background: var(--white);
+        color: var(--primary-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+      }
+
+      .header-actions button:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem;
+      }
+
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .welcome-section {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .welcome-section h2 {
+        color: var(--primary-blue);
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .welcome-section p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .service-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-blue),
+          var(--primary-orange)
+        );
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .service-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      .service-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--white);
+        transition: all 0.3s ease;
+      }
+
+      .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .service-card h3 {
+        color: var(--text-dark);
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .service-card p {
+        color: var(--text-light);
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .service-btn {
+        padding: 0.8rem 2rem;
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .service-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem 2rem;
+        text-align: center;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        margin-top: auto;
+      }
+
+      footer p {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header-content {
+          justify-content: center;
+        }
+
+        .welcome-section h2 {
+          font-size: 1.5rem;
+        }
+      }
+
+      body.high-contrast {
+        background: #000;
+      }
+
+      body.high-contrast header,
+      body.high-contrast .welcome-section,
+      body.high-contrast .service-card,
+      body.high-contrast footer {
+        background: #fff;
+        border: 3px solid #000;
+      }
+
+      body.large-text {
+        font-size: 120%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">🚂</div>
+          <div class="brand-text">
+            <h1>IRCTC Dashboard</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button onclick="toggleContrast()" title="High Contrast">🔳</button>
+          <button onclick="toggleTextSize()" title="Increase Text Size">
+            A+
+          </button>
+          <button
+            onclick="window.location.href='/history/'"
+            title="Booking History"
+          >
+            <i class="fa-solid fa-history"></i> History
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="dashboard-container">
+        <div class="welcome-section">
+          <h2>Welcome back, <span id="userName">User</span>! 👋</h2>
+          <p>Your one-stop solution for all railway booking needs</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card" onclick="location.href='/booking/'">
+            <div class="service-icon">
+              <i class="fa-solid fa-train"></i>
+            </div>
+            <h3>Book Tickets</h3>
+            <p>
+              Plan and book your train journey with ease. Search trains, check
+              availability, and confirm your booking.
+            </p>
+            <button class="service-btn">Book Now</button>
+          </div>
+
+          <div class="service-card" onclick="location.href='/cancel/'">
+            <div class="service-icon">
+              <i class="fa-solid fa-ban"></i>
+            </div>
+            <h3>Cancel Tickets</h3>
+            <p>
+              Need to cancel? Process your ticket cancellation quickly and get
+              refunds as per policy.
+            </p>
+            <button class="service-btn">Cancel Ticket</button>
+          </div>
+
+          <div class="service-card" onclick="location.href='/pnr/'">
+            <div class="service-icon">
+              <i class="fa-solid fa-info-circle"></i>
+            </div>
+            <h3>Check PNR Status</h3>
+            <p>
+              Track your booking status in real-time. Get updates on seat
+              confirmation and journey details.
+            </p>
+            <button class="service-btn">Check Status</button>
+          </div>
+
+          <div class="service-card" onclick="location.href='/tourism/'">
+            <div class="service-icon">
+              <i class="fa-solid fa-map-marked-alt"></i>
+            </div>
+            <h3>Tourism Packages</h3>
+            <p>
+              Explore incredible India with our curated tour packages. Book
+              complete travel experiences.
+            </p>
+            <button class="service-btn">Explore Tours</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        © 2025 IRCTC. All Rights Reserved. | Ministry of Railways, Government of
+        India
+      </p>
+    </footer>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+      let contrastMode = false;
+      let largeText = false;
+
+      function toggleContrast() {
+        contrastMode = !contrastMode;
+        document.body.classList.toggle("high-contrast");
+      }
+
+      function toggleTextSize() {
+        largeText = !largeText;
+        document.body.classList.toggle("large-text");
+      }
+
+      (function () {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/login/";
+          return;
+        }
+        document.getElementById("userName").textContent =
+          localStorage.getItem("username") || "User";
+      })();
+    </script>
+  </body>
+</html>

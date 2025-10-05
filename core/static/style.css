@@ -1,0 +1,171 @@
+/* Reset and Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  color: #333;
+
+  /* Sticky footer fix */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main Content - Combined and fixed */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem;
+}
+
+header {
+  background-color: #003366;
+  padding: 1rem;
+  color: white;
+}
+
+header h1 {
+  margin-bottom: 0.5rem;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  background-color: #0059b3;
+  border-radius: 4px;
+}
+
+nav a:hover {
+  background-color: #0073e6;
+}
+
+/* Accessibility Buttons */
+.accessibility-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.accessibility-controls button {
+  flex: 1;
+  padding: 0.5rem;
+  font-weight: bold;
+  background-color: #007acc;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.accessibility-controls button:hover {
+  background-color: #005fa3;
+}
+
+/* Form Styling */
+.search-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+form input,
+form select,
+form button {
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  background-color: #007acc;
+  color: white;
+  font-weight: bold;
+  border: none;
+  margin-top: 1.5rem;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #005fa3;
+}
+
+/* Voice Input Button */
+#micButton {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#micButton:hover {
+  background-color: #005fa3;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #003366;
+  color: white;
+  margin-top: auto;
+}
+
+.back-home-btn {
+  margin-top: 1rem;
+  padding: 8px 12px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-home-btn:hover {
+  background-color: #005fa3;
+}

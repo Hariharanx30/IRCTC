@@ -1,0 +1,413 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tourism Packages - IRCTC</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #0c4a8a;
+        --primary-orange: #ff6b35;
+        --text-dark: #2c3e50;
+        --text-light: #6c757d;
+        --white: #ffffff;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-blue);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        color: var(--primary-blue);
+        font-size: 1.5rem;
+      }
+
+      .back-btn {
+        padding: 0.6rem 1.2rem;
+        background: var(--white);
+        color: var(--primary-blue);
+        border: 2px solid var(--primary-blue);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: var(--primary-blue);
+        color: var(--white);
+      }
+
+      main {
+        flex: 1;
+        padding: 2rem;
+      }
+
+      .tourism-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .page-header {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .page-header h2 {
+        color: var(--primary-blue);
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .page-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+      }
+
+      .packages-grid {
+        display: grid;
+        gap: 2rem;
+      }
+
+      .package-card {
+        background: var(--white);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        animation: slideIn 0.5s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .package-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .package-image-wrapper {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+      }
+
+      .package-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .package-card:hover .package-image {
+        transform: scale(1.1);
+      }
+
+      .package-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary-orange);
+        color: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .package-content {
+        padding: 2rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .package-title {
+        color: var(--text-dark);
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .package-description {
+        color: var(--text-light);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex: 1;
+      }
+
+      .package-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.5rem;
+        border-top: 2px solid #f0f0f0;
+      }
+
+      .package-price {
+        color: var(--primary-blue);
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .package-price-label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--text-light);
+        font-weight: normal;
+      }
+
+      .book-btn {
+        padding: 0.8rem 2rem;
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .book-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      footer {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+        margin-top: auto;
+      }
+
+      footer p {
+        color: var(--text-dark);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .package-image-wrapper {
+          height: 200px;
+        }
+
+        .package-content {
+          padding: 1.5rem;
+        }
+
+        .package-footer {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .book-btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">🚂</div>
+          <div class="brand-text">
+            <h1>Tourism Packages</h1>
+          </div>
+        </div>
+        <button class="back-btn" onclick="window.location.href='/home/'">
+          ← Back to Home
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="tourism-container">
+        <div class="page-header">
+          <h2>Explore India with IRCTC Tourism</h2>
+          <p>Discover incredible destinations with our curated tour packages</p>
+        </div>
+
+        <div class="packages-grid">
+          <div class="package-card">
+            <div class="package-image-wrapper">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Brihadisvara_Temple_1.jpg"
+                alt="South India Temple Tour"
+                class="package-image"
+              />
+              <div class="package-badge">Featured</div>
+            </div>
+            <div class="package-content">
+              <h3 class="package-title">South India Temple Tour</h3>
+              <p class="package-description">
+                Experience the spiritual essence of South India. Visit the
+                magnificent temples of Tamil Nadu and Kerala, including the
+                UNESCO World Heritage Site Brihadeeswarar Temple, the stunning
+                Meenakshi Temple, and the historic Padmanabhaswamy Temple.
+                Immerse yourself in rich culture, architecture, and devotion.
+              </p>
+              <div class="package-footer">
+                <div class="package-price">
+                  <span class="package-price-label">Starting from</span>
+                  ₹8,999
+                </div>
+                <button
+                  class="book-btn"
+                  onclick="alert('Booking coming soon!')"
+                >
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="package-card">
+            <div class="package-image-wrapper">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Taj_Mahal%2C_Agra%2C_India_edit3.jpg"
+                alt="Golden Triangle Tour"
+                class="package-image"
+              />
+              <div class="package-badge">Popular</div>
+            </div>
+            <div class="package-content">
+              <h3 class="package-title">Golden Triangle (Delhi–Agra–Jaipur)</h3>
+              <p class="package-description">
+                Explore the best of North India on this iconic journey. Marvel
+                at Delhi's Red Fort and Qutub Minar, witness the breathtaking
+                Taj Mahal in Agra, and discover the royal heritage of Jaipur's
+                Amber Palace. A perfect blend of history, culture, and
+                architectural wonders.
+              </p>
+              <div class="package-footer">
+                <div class="package-price">
+                  <span class="package-price-label">Starting from</span>
+                  ₹12,999
+                </div>
+                <button
+                  class="book-btn"
+                  onclick="alert('Booking coming soon!')"
+                >
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="package-card">
+            <div class="package-image-wrapper">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/0/09/Darjeeling_himalayan_railway.jpg"
+                alt="Darjeeling Himalayan Explorer"
+                class="package-image"
+              />
+              <div class="package-badge">Adventure</div>
+            </div>
+            <div class="package-content">
+              <h3 class="package-title">Darjeeling Himalayan Explorer</h3>
+              <p class="package-description">
+                Journey through the clouds on the famous Darjeeling Toy Train, a
+                UNESCO World Heritage Railway. Visit lush tea gardens, witness
+                stunning sunrise views over Kanchenjunga, and experience the
+                serene beauty of the Eastern Himalayas. Perfect for nature
+                lovers and photography enthusiasts.
+              </p>
+              <div class="package-footer">
+                <div class="package-price">
+                  <span class="package-price-label">Starting from</span>
+                  ₹9,999
+                </div>
+                <button
+                  class="book-btn"
+                  onclick="alert('Booking coming soon!')"
+                >
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        © 2025 IRCTC. All Rights Reserved. | Ministry of Railways, Government of
+        India
+      </p>
+    </footer>
+  </body>
+</html>
