@@ -15,6 +15,7 @@
       :root {
         --primary-blue: #0c4a8a;
         --error-red: #dc3545;
+        --success-green: #28a745;
         --text-dark: #2c3e50;
         --text-light: #6c757d;
         --white: #ffffff;
@@ -204,6 +205,17 @@
         box-shadow: 0 0 0 3px rgba(12, 74, 138, 0.1);
       }
 
+      .error-message {
+        color: var(--error-red);
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
       .btn {
         width: 100%;
         padding: 1rem;
@@ -220,28 +232,163 @@
         color: var(--white);
       }
 
-      .btn-danger:hover {
+      .btn-danger:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
       }
 
-      .btn-danger.loading {
-        position: relative;
-        color: transparent;
+      .btn-danger:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
 
-      .btn-danger.loading::after {
-        content: "";
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        top: 50%;
-        left: 50%;
-        margin: -10px 0 0 -10px;
+      /* Confirmation Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal-overlay.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: var(--shadow-lg);
+        animation: slideUp 0.3s ease;
+        text-align: center;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+      }
+
+      .modal-icon.warning {
+        background: linear-gradient(135deg, #fff3cd, #ffc107);
+      }
+
+      .modal-icon.success {
+        background: linear-gradient(135deg, #d4edda, var(--success-green));
+      }
+
+      .modal-icon.error {
+        background: linear-gradient(135deg, #f8d7da, var(--error-red));
+      }
+
+      .modal-content h3 {
+        color: var(--text-dark);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .modal-content p {
+        color: var(--text-light);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+      }
+
+      .pnr-display {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        font-family: monospace;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .modal-btn {
+        flex: 1;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .modal-btn-cancel {
+        background: #6c757d;
+        color: var(--white);
+      }
+
+      .modal-btn-cancel:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+      }
+
+      .modal-btn-confirm {
+        background: linear-gradient(135deg, var(--error-red), #c82333);
+        color: var(--white);
+      }
+
+      .modal-btn-confirm:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+      }
+
+      .modal-btn-confirm:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .modal-btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue), #0a3d6e);
+        color: var(--white);
+      }
+
+      .modal-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(12, 74, 138, 0.3);
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
         border: 3px solid var(--white);
         border-radius: 50%;
         border-top-color: transparent;
         animation: spin 0.6s linear infinite;
+        margin-right: 0.5rem;
       }
 
       @keyframes spin {
@@ -266,6 +413,14 @@
       @media (max-width: 768px) {
         .cancel-container {
           padding: 2rem;
+        }
+
+        .modal-content {
+          padding: 2rem;
+        }
+
+        .modal-actions {
+          flex-direction: column;
         }
       }
     </style>
@@ -313,6 +468,9 @@
                 required
               />
             </div>
+            <div class="error-message" id="errorMessage">
+              Please enter a valid PNR number
+            </div>
           </div>
 
           <button type="submit" class="btn btn-danger">Cancel Ticket</button>
@@ -327,11 +485,91 @@
       </p>
     </footer>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("cancelForm");
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+      <div class="modal-content">
+        <div class="modal-icon warning">⚠️</div>
+        <h3>Confirm Cancellation</h3>
+        <p>
+          Are you sure you want to cancel this booking? This action cannot be
+          undone.
+        </p>
+        <div class="pnr-display" id="confirmPnr"></div>
+        <div class="modal-actions">
+          <button
+            class="modal-btn modal-btn-cancel"
+            onclick="closeConfirmModal()"
+          >
+            No, Keep Booking
+          </button>
+          <button
+            class="modal-btn modal-btn-confirm"
+            id="confirmCancelBtn"
+            onclick="proceedCancellation()"
+          >
+            Yes, Cancel Ticket
+          </button>
+        </div>
+      </div>
+    </div>
 
-        form.addEventListener("submit", async (e) => {
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+      <div class="modal-content">
+        <div class="modal-icon success">✓</div>
+        <h3>Cancellation Successful!</h3>
+        <p>Your ticket has been cancelled successfully.</p>
+        <div class="pnr-display" id="successPnr"></div>
+        <p style="margin-bottom: 1rem">
+          Refund will be processed within 7-10 business days to your original
+          payment method.
+        </p>
+        <div class="modal-actions">
+          <button
+            class="modal-btn modal-btn-primary"
+            onclick="goToHistory()"
+            style="width: 100%"
+          >
+            View Booking History
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal-overlay" id="errorModal">
+      <div class="modal-content">
+        <div class="modal-icon error">✕</div>
+        <h3>Cancellation Failed</h3>
+        <p id="errorModalMessage">
+          Unable to cancel the booking. Please try again.
+        </p>
+        <div class="modal-actions">
+          <button
+            class="modal-btn modal-btn-primary"
+            onclick="closeErrorModal()"
+            style="width: 100%"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentPnr = "";
+
+      // Only allow numbers in PNR input
+      document.getElementById("pnr").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/[^0-9]/g, "");
+        const errorMsg = document.getElementById("errorMessage");
+        errorMsg.classList.remove("show");
+      });
+
+      // Form submission - show confirmation modal
+      document
+        .getElementById("cancelForm")
+        .addEventListener("submit", function (e) {
           e.preventDefault();
 
           const token = localStorage.getItem("token");
@@ -341,53 +579,89 @@
           }
 
           const pnr = document.getElementById("pnr").value.trim();
-          if (!pnr) {
-            alert("Please enter a PNR number");
+          const errorMsg = document.getElementById("errorMessage");
+
+          if (!pnr || pnr.length !== 10) {
+            errorMsg.classList.add("show");
             return;
           }
 
-          const confirmed = confirm(
-            `Are you sure you want to cancel PNR: ${pnr}?\n\nThis action cannot be undone.`
-          );
-          if (!confirmed) return;
-
-          const submitBtn = form.querySelector(".btn-danger");
-          submitBtn.classList.add("loading");
-          submitBtn.disabled = true;
-
-          try {
-            const res = await fetch("/api/cancel/", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ pnr }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-              alert(data.detail || "Cancellation failed");
-              submitBtn.classList.remove("loading");
-              submitBtn.disabled = false;
-              return;
-            }
-
-            alert(
-              `Cancellation Successful!\n\nPNR: ${data.pnr}\nRefund will be processed shortly.`
-            );
-            window.location.href = "/history/";
-          } catch (error) {
-            alert("Network error. Please try again.");
-            submitBtn.classList.remove("loading");
-            submitBtn.disabled = false;
-          }
+          // Store PNR and show confirmation modal
+          currentPnr = pnr;
+          document.getElementById("confirmPnr").textContent = `PNR: ${pnr}`;
+          document.getElementById("confirmModal").classList.add("show");
         });
 
-        // Only allow numbers in PNR input
-        document.getElementById("pnr").addEventListener("input", function (e) {
-          e.target.value = e.target.value.replace(/[^0-9]/g, "");
+      function closeConfirmModal() {
+        document.getElementById("confirmModal").classList.remove("show");
+      }
+
+      function closeErrorModal() {
+        document.getElementById("errorModal").classList.remove("show");
+      }
+
+      function goToHistory() {
+        window.location.href = "/history/";
+      }
+
+      async function proceedCancellation() {
+        const confirmBtn = document.getElementById("confirmCancelBtn");
+        const originalText = confirmBtn.textContent;
+
+        // Disable button and show loading
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML =
+          '<span class="loading-spinner"></span>Processing...';
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const res = await fetch("/api/cancel/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ pnr: currentPnr }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            // Show error modal
+            closeConfirmModal();
+            document.getElementById("errorModalMessage").textContent =
+              data.detail ||
+              "Unable to cancel the booking. The PNR may not exist or has already been cancelled.";
+            document.getElementById("errorModal").classList.add("show");
+            return;
+          }
+
+          // Show success modal
+          closeConfirmModal();
+          document.getElementById(
+            "successPnr"
+          ).textContent = `PNR: ${data.pnr}`;
+          document.getElementById("successModal").classList.add("show");
+        } catch (error) {
+          // Show error modal for network issues
+          closeConfirmModal();
+          document.getElementById("errorModalMessage").textContent =
+            "Network error. Please check your connection and try again.";
+          document.getElementById("errorModal").classList.add("show");
+        } finally {
+          // Reset button
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = originalText;
+        }
+      }
+
+      // Close modals when clicking outside
+      document.querySelectorAll(".modal-overlay").forEach((overlay) => {
+        overlay.addEventListener("click", function (e) {
+          if (e.target === overlay) {
+            overlay.classList.remove("show");
+          }
         });
       });
     </script>
